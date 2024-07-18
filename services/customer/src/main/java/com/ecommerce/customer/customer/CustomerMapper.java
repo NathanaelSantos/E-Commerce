@@ -19,4 +19,14 @@ public class CustomerMapper {
                 .address(customer.address())
                 .build();
     }
+
+    public static CustomerResponse fromCustomer(Customer customer) {
+        return new CustomerResponse(
+                customer.getId(),
+                customer.getFirstName(),
+                customer.getLastName(),
+                customer.getEmail(),
+                customer.getAddress()
+        );
+    }
 }
