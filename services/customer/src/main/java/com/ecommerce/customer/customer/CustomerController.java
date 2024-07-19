@@ -31,4 +31,20 @@ public class CustomerController {
     public ResponseEntity<List<CustomerResponse>> findALl(){
         return ResponseEntity.ok(service.getALlCustomers());
     }
+
+    @GetMapping("/exists/{customer-id}")
+    public ResponseEntity<Boolean> existsCustomerById(@PathVariable("customer-id") String customerId){
+        return ResponseEntity.ok(service.existsById(customerId));
+    }
+
+    @GetMapping("/{customer-id}")
+    public ResponseEntity<CustomerResponse> findById(@PathVariable("customer-id") String customerId){
+        return ResponseEntity.ok(service.findById(customerId));
+    }
+
+    @DeleteMapping("/{customer-id}")
+    public ResponseEntity<Void> deleteCustomer(@PathVariable("customer-id") String customerId){
+        service.deleteCustomer(customerId);
+        return ResponseEntity.accepted().build();
+    }
 }
