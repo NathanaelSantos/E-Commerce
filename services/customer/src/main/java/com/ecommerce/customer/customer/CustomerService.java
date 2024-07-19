@@ -11,20 +11,20 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CustomerService {
 
-    private final CustomerRepository customerRepository;
+    private final CustomerRepository repository;
     private final CustomerMapper customerMapper;
 
     public String createCustomer(CustomerRequest customer) {
-        var request = customerRepository.save(customerMapper.toCustomer(customer));
+        var request = repository.save(customerMapper.toCustomer(customer));
         return request.getId();
     }
 
     public void updateCustomer(CustomerRequest request) {
-        var customer = customerRepository.findById(request.id())
+        var customer = repository.findById(request.id())
                 .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
 
         mergeCustomer(customer, request);
-        customerRepository.save(customer);
+        repository.save(customer);
     }
 
     private void mergeCustomer(Customer customer, CustomerRequest request) {
@@ -42,9 +42,23 @@ public class CustomerService {
     }
 
     public List<CustomerResponse> getALlCustomers() {
-        return customerRepository.findAll()
+        return repository.findAll()
                 .stream()
                 .map(CustomerMapper::fromCustomer)
                 .collect(Collectors.toList());
+    }
+
+    public Boolean existsById(String customerId) {
+        return repository.findById(customerId).isPresent();
+    }
+
+    public CustomerResponse findById(String customerId) {
+        return repository.findById(customerId)
+                .map(CustomerMapper::fromCustomer)
+                .orElseThrow(() -> new CustomerNotFoundException("No customer found"));
+    }
+
+    public void deleteCustomer(String customerId) {
+        repository.deleteById(customerId);
     }
 }
